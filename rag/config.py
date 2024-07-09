@@ -1,7 +1,7 @@
 from pathlib import Path
 
 # Directories
-EFS_DIR = Path("/mnt/shared_storage/ray-assistant-data")
+EFS_DIR = Path("/mnt/d/html-file-data")
 ROOT_DIR = Path(__file__).parent.parent.absolute()
 
 # Embedding dimensions

@@ -4,18 +4,23 @@ from bs4 import BeautifulSoup, NavigableString
 
 from rag.config import EFS_DIR
 
+import re
 
-def extract_text_from_section(section):
+
+def extract_text_from_section(section, uri):
     texts = []
+    sentence_list = []
     for elem in section.children:
         if isinstance(elem, NavigableString):
             if elem.strip():
                 texts.append(elem.strip())
-        elif elem.name == "section":
-            continue
+        elif re.match("^h", elem.name) != None and len(texts) > 0:
+            title = elem.get("id")
+            sentence_list.append({"source":f"{uri}#{title}", "text":"\n".join(texts)})
+            texts.clear
         else:
             texts.append(elem.get_text().strip())
-    return "\n".join(texts)
+    return sentence_list
 
 
 def path_to_uri(path, scheme="https://", domain="docs.ray.io"):
@@ -25,14 +30,11 @@ def path_to_uri(path, scheme="https://", domain="docs.ray.io"):
 def extract_sections(record):
     with open(record["path"], "r", encoding="utf-8") as html_file:
         soup = BeautifulSoup(html_file, "html.parser")
-    sections = soup.find_all("section")
+    sections = soup.find_all(name="div", attrs={"class":"theme-default-content content__default"})
     section_list = []
+    uri = path_to_uri(path=record["path"])
     for section in sections:
-        section_id = section.get("id")
-        section_text = extract_text_from_section(section)
-        if section_id:
-            uri = path_to_uri(path=record["path"])
-            section_list.append({"source": f"{uri}#{section_id}", "text": section_text})
+        section_list += extract_text_from_section(section, uri)
     return section_list
 
 

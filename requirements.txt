@@ -10,6 +10,7 @@ python-dotenv
 ray
 seaborn
 sentence_transformers
+sentencepiece
 slack_bolt
 streamlit
 structlog

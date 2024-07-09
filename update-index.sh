@@ -23,9 +23,9 @@ fi
 
 # Drop and create table
 export DB_CONNECTION_STRING="dbname=postgres user=postgres host=localhost password=postgres"  # TODO: move to CI/CD secrets manager
-export EMBEDDING_MODEL_NAME="thenlper/gte-large"  # TODO: use service env vars
+export EMBEDDING_MODEL_NAME="BAAI/bge-large-zh"  # TODO: use service env vars
 export MIGRATION_FP="migrations/vector-1024.sql"  # TODO: dynamically set this
-export SQL_DUMP_FILE="/mnt/shared_storage/ray-assistant-data/index.sql"
+export SQL_DUMP_FILE="/mnt/d/html-file-data/index.sql"
 psql "$DB_CONNECTION_STRING" -c "DROP TABLE IF EXISTS document;"
 sudo -u postgres psql -f $MIGRATION_FP
 
